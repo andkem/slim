@@ -40,6 +40,9 @@ public:
 	static void split(std::vector<std::string> &v, const std::string &str, 
 					  char c, bool useEmpty=true);
 	static std::string Trim(const std::string &s);
+	static void replaceVariables(std::string& input,
+			const std::string& var,
+			const std::string& value);
 
     std::pair<std::string,std::string> nextSession();
 

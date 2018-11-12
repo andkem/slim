@@ -10,6 +10,7 @@
 */
 
 #include <cstdio>
+#include <fstream>
 #include "switchuser.h"
 #include "util.h"
 
@@ -28,10 +29,24 @@ SwitchUser::~SwitchUser() {
 	/* Never called */
 }
 
-void SwitchUser::Login(const char* cmd, const char* mcookie) {
+void SwitchUser::Login(const char* cmd, const char* mcookie,
+		const string& session) {
 	SetUserId();
-	SetClientAuth(mcookie);
-	Execute(cmd);
+	UpdateDefaultWm(session);
+	ExecuteLogin(cmd, mcookie);
+}
+
+void SwitchUser::DefaultLogin(string cmd, const char* mcookie) {
+	SetUserId();
+
+	string wmPath = "/home/" + string(Pw->pw_name) + "/.wm_style";
+	ifstream vm_file(wmPath);
+	string wm;
+	vm_file >> wm;
+
+	Cfg::replaceVariables(cmd, SESSION_VAR, wm);
+
+	ExecuteLogin(cmd.c_str(), mcookie);
 }
 
 void SwitchUser::SetUserId() {
@@ -50,10 +65,21 @@ void SwitchUser::Execute(const char* cmd) {
 	logStream << APPNAME << ": could not execute login command" << endl;
 }
 
+void SwitchUser::ExecuteLogin(const char* cmd, const char* mcookie) {
+	SetClientAuth(mcookie);
+	Execute(cmd);
+}
+
 void SwitchUser::SetClientAuth(const char* mcookie) {
 	string home = string(Pw->pw_dir);
 	string authfile = home + "/.Xauthority";
 	remove(authfile.c_str());
 	Util::add_mcookie(mcookie, ":0", cfg->getOption("xauth_path"),
 	  authfile);
+}
+
+void SwitchUser::UpdateDefaultWm(const string& session) {
+	string wm_path = "/home/" + string(Pw->pw_name) + "/.wm_style";
+	ofstream vm_file(wm_path, ios::trunc);
+	vm_file << session;
 }

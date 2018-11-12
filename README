@@ -16,6 +16,13 @@ INTRODUCTION
     - Double or single (GDM-style) inputbox support
     - CMake build procedure
 
+LYSATOR FORK
+    This is a fork of SLiM for use by Lysator, www.lysator.liu.se,
+    that adds support for remembering which WM is the most
+    recently used.
+
+    The most recently used WM is saved in /home/${USER}/.wm_style.
+
 INSTALLATION
     see the INSTALL file
     

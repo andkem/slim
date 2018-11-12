@@ -29,14 +29,18 @@ public:
 	SwitchUser(struct passwd *pw, Cfg *c, const std::string& display,
 			   char** _env);
 	~SwitchUser();
-	void Login(const char* cmd, const char* mcookie);
+	void Login(const char* cmd, const char* mcookie,
+			const string& session);
+	void DefaultLogin(string cmd, const char* mcookie);
 
 private:
 	SwitchUser();
 	void SetEnvironment();
 	void SetUserId();
 	void Execute(const char* cmd);
+	void ExecuteLogin(const char* cmd, const char* mcookie);
 	void SetClientAuth(const char* mcookie);
+	void UpdateDefaultWm(const string& session);
 	Cfg* cfg;
 	struct passwd *Pw;
 

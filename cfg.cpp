@@ -288,10 +288,23 @@ void Cfg::split(vector<string>& v, const string& str, char c, bool useEmpty) {
 	}
 }
 
+void Cfg::replaceVariables(string& input,
+		const string& var,
+		const string& value)
+{
+	string::size_type pos = 0;
+	int len = var.size();
+	while ((pos = input.find(var, pos)) != string::npos) {
+		input = input.substr(0, pos) + value + input.substr(pos+len);
+	}
+}
+
 void Cfg::fillSessionList(){
 	string strSessionDir  = getOption("sessiondir");
 
 	sessions.clear();
+
+	sessions.push_back(pair<string,string>("default","default"));
 
 	if( !strSessionDir.empty() ) {
 		DIR *pDir = opendir(strSessionDir.c_str());
